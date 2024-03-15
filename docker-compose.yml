@@ -1,0 +1,61 @@
+version: "3.3"
+services:
+    nmap:
+        image: octo-analyser/nmap:7.8
+        build:
+            context: ./
+            dockerfile: nmap/Dockerfile
+        container_name: "nmap-diagnose-0"
+        command: "-sS -sV --script=default,vuln -p- -T5 ${TARGET_HOST}"
+
+    nikto:
+        image: octo-analyser/nikto:2.1.6
+        build:
+            context: ./
+            dockerfile: nikto/Dockerfile
+        container_name: "nikto-diagnose-0"
+        command: "-h ${TARGET_HOST}"
+
+    wfuzz:
+        image: octo-analyser/wfuzz:2.4.6
+        build:
+            context: ./
+            dockerfile: wfuzz/Dockerfile
+        container_name: "wfuzz-diagnose-0"
+        command: "-t 50 -w SQL.txt ${TARGET_HOST}/FUZZ"
+
+
+#"wfuzz -t 50 -w web-app.hms.txt -H 'HOST: FUZZ.htb' --hh 8193 cache.htb"
+
+#	memcached:
+#		image: memcached:1.5
+#		container_name: website-2019-memcached
+#		ports:
+#			- "11211:11211"
+#
+#	app:
+#		image: fretebras/fretebras-php7.3-dev:latest
+#		build:
+#			context: ../
+#			dockerfile: .setup/containers/dev/Dockerfile
+#		container_name: website-2019-app #TODO: improve names to prevent conflicts (with .env file)
+#		environment:
+#			DB_DSN_MONGO: "${DB_DSN_MONGO}"
+#		volumes:
+#			- ../:/var/www/html
+#			- ./automation/config/stage/php/php.ini:/etc/php/7.3/fpm/conf.d/fretebras.ini
+#			- ./automation/config/stage/php/php-fpm-www.conf:/etc/php/7.3/fpm/pool.d/fretebras.conf
+#			- ./automation/config/stage/nginx/default:/etc/nginx/sites-available/default
+#		ports:
+#			- "8080:80"
+#			- "3000:3000"
+#			- "3001:3001"
+#		links:
+#			- mysql
+#			- mongo
+#			- redis
+#			- memcached
+
+#dirseach: docker run --network="host" -v $(pwd):/app/code -w /app/code -it --rm dirsearch:v0.3.8 -u blunder.htb -E -r -t 100 -f -w all-web-server.common.txt
+#reconnoitre: https://github.com/codingo/Reconnoitre
+#arachni: https://github.com/Arachni/arachni
