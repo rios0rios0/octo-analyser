@@ -116,7 +116,7 @@ TARGET_HOST=http://target.htb docker-compose run wfuzz -t 50 -w web-app.hms.txt 
 
 ## Contributing
 
-Contributions are welcome. Please open an issue or submit a pull request.
+Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## License
 
