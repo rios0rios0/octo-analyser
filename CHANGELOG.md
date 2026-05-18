@@ -18,7 +18,11 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 
 ### Added
 
+- created `CLAUDE.md` with build commands, architecture overview, and Dockerfile conventions
+
 ### Changed
+
+- refreshed `.github/copilot-instructions.md` repository structure to include `CHANGELOG.md`
 
 ### Removed
 
