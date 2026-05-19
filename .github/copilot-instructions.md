@@ -28,6 +28,7 @@ octo-analyser/
 ├── docker-compose.yml            # Service orchestration driven by TARGET_HOST variable
 ├── .dockerignore
 ├── .editorconfig
+├── CHANGELOG.md
 ├── CONTRIBUTING.md
 ├── LICENSE
 └── README.md
