@@ -29,6 +29,7 @@ octo-analyser/
 ├── .dockerignore
 ├── .editorconfig
 ├── CHANGELOG.md
+├── CLAUDE.md                     # Guidance for Claude Code sessions
 ├── CONTRIBUTING.md
 ├── LICENSE
 └── README.md
