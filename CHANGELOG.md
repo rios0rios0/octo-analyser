@@ -16,6 +16,10 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 
 ## [Unreleased]
 
+### Changed
+
+- refreshed `.github/copilot-instructions.md` repository structure to include `CLAUDE.md`
+
 ## [0.2.0] - 2026-05-19
 
 ### Added
