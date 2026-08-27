@@ -115,8 +115,7 @@ All dependencies are managed inside the individual Dockerfiles.
 
 ## CI/CD Pipeline
 
-There is currently **no CI/CD configuration** in this repository (no `.github/workflows/`
-directory). Build and scan validation is performed locally via `docker-compose build`.
+There is currently **no build or deployment pipeline** in this repository. The only workflows are `.github/workflows/claude-review.yaml` and `.github/workflows/claude-mention.yaml`, which call the shared Claude reusable workflows in `rios0rios0/pipelines` and need the `CLAUDE_CODE_OAUTH_TOKEN` secret. Build and scan validation is performed locally via `docker-compose build`.
 
 ## Development Workflow
 
