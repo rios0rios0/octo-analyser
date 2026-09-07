@@ -115,7 +115,12 @@ All dependencies are managed inside the individual Dockerfiles.
 
 ## CI/CD Pipeline
 
-There is currently **no build or deployment pipeline** in this repository. The only workflows are `.github/workflows/claude-review.yaml` and `.github/workflows/claude-mention.yaml`, which call the shared Claude reusable workflows in `rios0rios0/pipelines` and need the `CLAUDE_CODE_OAUTH_TOKEN` secret. Build and scan validation is performed locally via `docker-compose build`.
+There is no build or deployment pipeline for the images themselves. The workflows in `.github/workflows/` all call shared reusable workflows in `rios0rios0/pipelines`:
+
+- `checks.yaml` runs on pull requests to `main` and calls the shared `checks.yaml` gate (`code-check > quality:basic-checks` — rebase status and the changelog-fragment rule). Since this repository has no language build, this is the only automated enforcement of the chlog rule.
+- `claude-review.yaml` and `claude-mention.yaml` call the Claude reusable review and `@claude` responder workflows; both need the `CLAUDE_CODE_OAUTH_TOKEN` secret.
+
+Build and scan validation is performed locally via `docker-compose build`.
 
 ## Development Workflow
 
