@@ -1,3 +1,0 @@
-kind: 'Changed'
-body: 'refreshed the `code-review` skill secret-hygiene bullet to stop quoting scanner-matchable credential prefixes'
-time: '2026-09-07T08:12:45.512930412Z'
