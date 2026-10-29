@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to AI coding agents (Claude Code, Codex, Cursor, GitHub Copilot) when working with code in this repository.
 
 ## Project
 
@@ -26,7 +26,7 @@ TARGET_HOST=10.0.0.1 docker-compose run nmap -sU -sV -p 53,161,500 10.0.0.1
 
 ## Architecture
 
-- **One tool per directory.** `nmap/`, `nikto/`, `wfuzz/` each contain one `Dockerfile`. Placeholder directories (`arachni/`, `dirsearch/`, `reconnoitre/`) have empty Dockerfiles reserving the structure.
+- **One tool per directory.** `nmap/`, `nikto/`, `wfuzz/` each contain one `Dockerfile`. Every compose service builds with `context: ./` (the repo root) and `dockerfile: <tool>/Dockerfile`, so `COPY` paths are root-relative and the root `.dockerignore` applies. Placeholder directories (`arachni/`, `dirsearch/`, `reconnoitre/`) have empty Dockerfiles reserving the structure.
 - **Source compilation.** Nmap is compiled from the official tarball on Alpine for exact version pinning. Build deps are removed in the same `RUN` layer.
 - **Environment-driven targets.** All services read `TARGET_HOST` from the calling shell. No secrets or targets are hardcoded.
 - **Compose version 3.3.** Services define `ENTRYPOINT` in their Dockerfile; the `command` key in `docker-compose.yml` passes scan arguments.
@@ -40,13 +40,11 @@ TARGET_HOST=10.0.0.1 docker-compose run nmap -sU -sV -p 53,161,500 10.0.0.1
 
 ## Dependencies
 
-No `package.json`, `requirements.txt`, or `go.mod` at repo root. All dependencies are managed inside individual Dockerfiles.
-
 Runtime: Docker 20+, Docker Compose v2+.
 
 ## Conventions
 
-Follow [commit conventions](https://github.com/rios0rios0/guide/wiki/Life-Cycle/Git-Flow) and the [Development Guide](https://github.com/rios0rios0/guide/wiki). See [CONTRIBUTING.md](CONTRIBUTING.md).
+Follow [commit conventions](https://github.com/rios0rios0/guide/wiki/Git-Flow) and the [Development Guide](https://github.com/rios0rios0/guide/wiki). See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 <!-- chlog:start -->
 ## Changelog (chlog) — MANDATORY

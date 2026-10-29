@@ -20,8 +20,9 @@ The canonical engineering standards live in the
 repo-tailored index into that guide plus the rules that only apply here. Precedence, highest
 first:
 
-1. This repository's `.github/copilot-instructions.md`, `CLAUDE.md`, and `CONTRIBUTING.md` —
-   they describe *this* codebase and its load-bearing invariants.
+1. This repository's `.github/copilot-instructions.md`, `AGENTS.md` (which `CLAUDE.md`
+   imports), and `CONTRIBUTING.md` — they describe *this* codebase and its load-bearing
+   invariants.
 2. The **rios0rios0/guide** wiki — the shared standard.
 3. General language idiom.
 
@@ -46,9 +47,9 @@ guide disagree, the guide wins and this file should be corrected in the same pul
    `git symbolic-ref refs/remotes/origin/HEAD` (strip `refs/remotes/origin/`; fall back to `main`),
    then read the diff with `git diff <default>...HEAD` and the file list with
    `git diff <default>...HEAD --name-only`.
-2. **Read whole files, not just hunks.** A hunk cannot show a layering violation, a missing
-   test, or a duplicated helper. Open every changed file in full, plus the files it imports
-   from the layer below.
+2. **Read whole files, not just hunks.** A hunk cannot show a build dependency left behind
+   or a compose entry out of step with its Dockerfile. Open every changed file in full, plus
+   the `docker-compose.yml` service for any changed Dockerfile (and the reverse).
 3. **Check the change set as a unit** — not only the code. A change that alters behaviour,
    configuration, or architecture is incomplete without its changelog entry and its
    documentation update, and that omission is a finding in its own right.
@@ -64,7 +65,7 @@ These are the checks that catch real defects in this repository. Work through
 them before the generic ones.
 
 - **No target may be hard-coded.** Every scan is driven by `TARGET_HOST`; a hostname, IP, or URL committed as a default points the toolkit at someone's infrastructure by accident. **Critical.**
-- **One tool per directory, one Dockerfile each**, with `docker-compose.yml` referencing each subdirectory as its build context. A tool added outside that shape breaks the pattern.
+- **One tool per directory, one Dockerfile each.** Each `docker-compose.yml` service builds with `context: ./` (the repository root) and `dockerfile: <tool>/Dockerfile`, so `COPY` paths are root-relative and the root `.dockerignore` applies. A tool added outside that shape breaks the pattern.
 - **Versions are pinned deliberately** — Nmap 7.80 is compiled from the official tarball precisely so the version is exact. A floating base image or an unpinned package install makes results non-reproducible; a downloaded tarball needs its checksum verified.
 - **Containers run as non-root wherever the tool allows it** — Nikto already does. A new image that runs as root needs a justification, and Hadolint findings are fixed rather than ignored.
 - **Build dependencies are stripped from the final image.** These images carry attack tooling; leaving a compiler and headers in them widens what an escape would gain.
@@ -109,7 +110,7 @@ hand.
 - Fragment bodies start with a lowercase verb in simple past tense, capitalise proper nouns
   (GitHub, Go, Docker), and wrap code identifiers and versions in backticks.
 - `README.md` is updated whenever usage, setup, configuration, or architecture changes;
-  `.github/copilot-instructions.md` and `CLAUDE.md` whenever the workflow, commands, or
+  `.github/copilot-instructions.md` and `AGENTS.md` whenever the workflow, commands, or
   structure changes. Documentation and code ship in one commit.
 
 ## Git Flow and pull-request hygiene
@@ -173,7 +174,7 @@ A review that raises noise gets ignored. Do not report these:
 ### Change-control checklist
 - [ ] Changelog entry present for every behavioural change
 - [ ] `README.md` updated if usage, setup, or architecture changed
-- [ ] `.github/copilot-instructions.md` and `CLAUDE.md` updated if the workflow, commands, or structure changed
+- [ ] `.github/copilot-instructions.md` and `AGENTS.md` updated if the workflow, commands, or structure changed
 - [ ] Commit messages follow `type(SCOPE): message` in simple past tense
 - [ ] Breaking changes flagged in the commit footer, the changelog, and the PR description
 
@@ -185,8 +186,8 @@ A review that raises noise gets ignored. Do not report these:
 
 | Severity       | Use for                                                                                                                            |
 |----------------|------------------------------------------------------------------------------------------------------------------------------------|
-| **Critical**   | Broken dependency direction, a leaked secret, an injection or authentication flaw, a missing changelog entry, a banned mock library, a load-bearing invariant broken, a test deleted rather than fixed. |
-| **Warning**    | Naming that departs from the guide, a missing test for a new branch of logic, an unexplained magic value, a stale README or instructions file, a `switch` that should be a map. |
+| **Critical**   | A leaked secret, an injection or authentication flaw, a missing changelog entry, a load-bearing invariant broken.                   |
+| **Warning**    | Naming that departs from the guide, an unexplained magic value, a stale README or instructions file.                                |
 | **Suggestion** | Readability, consistency with neighbouring modules, and performance ideas that no rule mandates.                                     |
 
 Rank findings most severe first, and state plainly when nothing blocks the merge — an empty

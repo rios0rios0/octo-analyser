@@ -11,14 +11,17 @@ reproducible penetration testing workflows.
 
 ```
 octo-analyser/
+├── .changes/unreleased/          # chlog changelog fragments
 ├── .github/
-│   └── copilot-instructions.md   # This file
+│   ├── copilot-instructions.md   # This file
+│   ├── skills/code-review/       # Code-review skill
+│   └── workflows/                # checks, claude-review, claude-mention
 ├── nmap/
 │   └── Dockerfile                # Nmap 7.80 compiled from source on Alpine 3.12
 ├── nikto/
-│   └── Dockerfile                # Nikto 2.1.6 with hardened non-root setup on Alpine 3.10
+│   └── Dockerfile                # Nikto (unpinned clone) with hardened non-root setup on Alpine 3.10
 ├── wfuzz/
-│   └── Dockerfile                # Wfuzz 2.4.6 on Python 3.6 Alpine
+│   └── Dockerfile                # Wfuzz (unpinned clone) on Python 3.6 Alpine
 ├── arachni/
 │   └── Dockerfile                # Arachni scanner (placeholder – not yet implemented)
 ├── dirsearch/
@@ -28,8 +31,9 @@ octo-analyser/
 ├── docker-compose.yml            # Service orchestration driven by TARGET_HOST variable
 ├── .dockerignore
 ├── .editorconfig
-├── CHANGELOG.md
-├── CLAUDE.md                     # Guidance for Claude Code sessions
+├── AGENTS.md                     # Shared instructions for AI coding agents
+├── CHANGELOG.md                  # Generated from chlog fragments
+├── CLAUDE.md                     # Imports AGENTS.md (`@AGENTS.md`)
 ├── CONTRIBUTING.md
 ├── LICENSE
 └── README.md
@@ -41,8 +45,8 @@ octo-analyser/
 |-----------|-----------|
 | Orchestration | Docker Compose v3.3 |
 | Nmap container | Alpine 3.12, Nmap 7.80 compiled from source |
-| Nikto container | Alpine 3.10, Nikto 2.1.6 cloned from GitHub |
-| Wfuzz container | Python 3.6 Alpine, Wfuzz 2.4.6 cloned from GitHub |
+| Nikto container | Alpine 3.10, Nikto cloned from the GitHub default branch (no ref; image tagged `2.1.6`) |
+| Wfuzz container | Python 3.6 Alpine, Wfuzz cloned from the GitHub default branch (no ref; image tagged `2.4.6`) |
 | Arachni / Dirsearch / Reconnoitre | Placeholder Dockerfiles (not yet implemented) |
 
 ## Build Commands
@@ -88,8 +92,9 @@ TARGET_HOST=http://target.htb docker-compose run wfuzz -t 50 -w web-app.hms.txt 
 ## Architecture and Design Patterns
 
 - **One tool per directory**: Each security tool lives in its own subdirectory containing exactly
-  one `Dockerfile`. The `docker-compose.yml` at the root references each subdirectory as the build
-  context.
+  one `Dockerfile`. Every `docker-compose.yml` service builds with `context: ./` (the repository
+  root) and `dockerfile: <tool>/Dockerfile`, so `COPY` paths are root-relative and the root
+  `.dockerignore` applies.
 - **Source compilation for security-critical tools**: Nmap is compiled from the official tarball
   to allow precise version pinning and to strip build dependencies post-install (multi-stage
   style without a second stage, using `apk del .build-deps`).
@@ -132,7 +137,7 @@ Build and scan validation is performed locally via `docker-compose build`.
    docker-compose build <service>
    TARGET_HOST=<test-ip> docker-compose up <service>
    ```
-5. Commit following the [commit conventions](https://github.com/rios0rios0/guide/wiki/Life-Cycle/Git-Flow).
+5. Commit following the [commit conventions](https://github.com/rios0rios0/guide/wiki/Git-Flow).
 6. Open a pull request against `main`.
 
 Refer to [CONTRIBUTING.md](../CONTRIBUTING.md) and the
