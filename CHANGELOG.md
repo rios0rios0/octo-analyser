@@ -22,6 +22,13 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 
 ## [Unreleased]
 
+## [0.5.2] - 2026-11-04
+
+### Changed
+
+- corrected the build-context, Nikto and Wfuzz version, and Git-Flow link claims in `AGENTS.md`, `.github/copilot-instructions.md`, `CONTRIBUTING.md`, and the `code-review` skill, and dropped the test- and layering-specific review criteria that do not apply to this Dockerfile-only repository
+- moved the agent instructions from `CLAUDE.md` to `AGENTS.md`, keeping a `CLAUDE.md` that imports it, and pointed the `code-review` skill and `.github/copilot-instructions.md` at `AGENTS.md`
+
 ## [0.5.1] - 2026-09-08
 
 ### Changed
